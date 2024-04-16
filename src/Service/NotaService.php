@@ -11,6 +11,9 @@ class NotaService{
     }
 
     public function create(Nota $nota){
+        if($nota->getFechaModificion()==null){
+            $nota->setFechaModificion(new \DateTime());
+        }
         $this->entityManagerInterface->persist($nota);
         $this->entityManagerInterface->flush();
     }
@@ -18,6 +21,11 @@ class NotaService{
 
     public function list(): array{
         return $this->notaRepository->findAll();
+
+    }
+
+    public function find(int $id): ?Nota{
+        return $this->notaRepository->find($id);
 
     }
 

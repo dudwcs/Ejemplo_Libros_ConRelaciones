@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\NotaRepository;
 use DateTime;
-use Doctrine\DBAL\Types\Types;
+use App\Validator as AppValidator; 
+
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NotaRepository::class)]
+#[AppValidator\NotaTituloUnico]
 class Nota
 {
     #[ORM\Id]
@@ -15,15 +18,17 @@ class Nota
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(["message"=> "El título no debe estar vacía"])]
     #[ORM\Column(length: 50)]
     private ?string $titulo = null;
 
+    #[Assert\NotBlank(["message"=> "La descripción no debe estar vacía"])]
     #[ORM\Column(length: 255)]
     private ?string $descripcion = null;
 
 
     #[ORM\Column(type: 'datetime')]
-    private DateTime $fechaModificion;
+    private ?DateTime $fechaModificion = null;
 
     public function getId(): ?int
     {
