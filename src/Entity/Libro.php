@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LibroRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,17 @@ class Libro
 
     #[ORM\Column(nullable: true)]
     private ?int $unidadesVendidas = null;
+
+    #[ORM\ManyToMany(targetEntity: Autor::class, inversedBy: 'libros')]
+    private Collection $autores;
+
+    #[ORM\ManyToOne(inversedBy: 'libros')]
+    private ?Editorial $editorial = null;
+
+    public function __construct()
+    {
+        $this->autores = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +73,42 @@ class Libro
     public function setUnidadesVendidas(?int $unidades_vendidas): static
     {
         $this->unidadesVendidas = $unidades_vendidas;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Autor>
+     */
+    public function getAutores(): Collection
+    {
+        return $this->autores;
+    }
+
+    public function addAutore(Autor $autore): static
+    {
+        if (!$this->autores->contains($autore)) {
+            $this->autores->add($autore);
+        }
+
+        return $this;
+    }
+
+    public function removeAutore(Autor $autore): static
+    {
+        $this->autores->removeElement($autore);
+
+        return $this;
+    }
+
+    public function getEditorial(): ?Editorial
+    {
+        return $this->editorial;
+    }
+
+    public function setEditorial(?Editorial $editorial): static
+    {
+        $this->editorial = $editorial;
 
         return $this;
     }
